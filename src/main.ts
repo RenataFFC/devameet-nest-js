@@ -1,10 +1,11 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common'; 
+import { NestFactory } from '@nestjs/core'; 
+import { AppModule} from './app.module';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['error','log','warn','debug']
+    logger : ['error', 'log', 'warn', 'debug']
   });
 
   app.enableCors();
@@ -13,7 +14,7 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: false
+      forbidNonWhitelisted: false,
     }),
   );
 
@@ -21,4 +22,5 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
+
 bootstrap();
