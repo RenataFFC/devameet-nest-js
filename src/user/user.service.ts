@@ -4,13 +4,14 @@ import{InjectModel} from '@nestjs/mongoose';
 import {RegisterDto} from './dtos/register.dto';
 import{User,UserDocument} from './schemas/user.schemas';
 import * as CryptoJS from "crypto-js";
+import { UpdateUserDto } from './dtos/updateuser.dto';
 
 
 @Injectable()
 export class UserService{
     constructor(@InjectModel(User.name) private  readonly userModel: Model<UserDocument>){}
 
-    async create(dto: RegisterDto){
+     async create(dto: RegisterDto){
         dto.password = CryptoJS.AES.encrypt(dto.password, process.env.USER_CYPHER_SECRET_KEY).toString();
 
         const createUser = new this.userModel(dto);
@@ -40,5 +41,9 @@ export class UserService{
          return await this.userModel.findById(id);
        }
 
+
+       async updateUser(id: string, dto: UpdateUserDto){
+          return await this.userModel.findByIdAndUpdate(id,dto);
+       }
 
 }
