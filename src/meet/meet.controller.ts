@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Request } from '@nestjs/common'; 
+import { Body, Controller, Delete, Get, Put, HttpCode, HttpStatus, Param, Post, Request } from '@nestjs/common'; 
 import { CreateMeetDto } from './dtos/createmeet.dto'; 
 import { GetMeetDto } from './dtos/getmeet.dto'; 
 import { MeetService } from './meet.service'; 
+import { UpdateMeetDto } from './dtos/updatemeet.dto';
 
 @Controller('meet') 
 export class MeetController { 
@@ -10,30 +11,44 @@ export class MeetController {
           ){} 
 
 @Get() 
-async getUser(@Request() req){ 
-        const { userId } = req?.user; 
+        async getUser(@Request() req){ 
+          const { userId } = req?.user; 
+          const result = await this.service.getMeetsByUser(userId); 
 
-        const result = await this.service.getMeetsByUser(userId); 
-
-        return result?.map((m) => ({ 
-        id: m._id.toString(), 
-        name: m.name, 
-        color: m.color, 
-        link: m.link, 
-        }) as GetMeetDto); 
-        } 
+					return result?.map((m) => ({ 
+					id: m._id.toString(), 
+					name: m.name, 
+					color: m.color, 
+					link: m.link, 
+					}) as GetMeetDto);                 } 
 
 @Post() 
-async createMeet(@Request() req, @Body() dto: CreateMeetDto) { 
-const { userId } = req?.user; 
-await this.service.createMeet(userId, dto); 
-} 
+        async createMeet(@Request() req, @Body() dto: CreateMeetDto) { 
+					const { userId } = req?.user; 
+					await this.service.createMeet(userId, dto); 
+					} 
+
 
 @Delete(':id') 
-async deleteMeet(@Request() req,@Param() params) { 
-const { userId } = req?.user; 
-const { id } = params; 
-await this.service.deleteMeetByUser(userId, id); 
-} 
+				async deleteMeet(@Request() req,@Param() params) { 
+					const { userId } = req?.user; 
+					const { id } = params; 
+					await this.service.deleteMeetByUser(userId, id); 
+					} 
+
+@Get('objects/:id') 
+				async getObjectsByMeetId(@Request() req,@Param() params) { 
+					const { userId } = req?.user; 
+					const { id } = params; 
+					return await this.service.getMeetObjects( id,userId); 
+					} 
+
+
+@Put(':id') 
+				async updateMeet(@Request() req,@Param() params, @Body() dto: UpdateMeetDto) { 
+					const { userId } = req?.user; 
+					const { id } = params; 
+					return await this.service.update( id, userId , dto); 
+					} 
 }
 
