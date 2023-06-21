@@ -2,8 +2,8 @@ import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {Meet, MeetDocument } from 'src/meet/schemas/meet.schema';
-import { PositionDocument } from './schemas/position.schema';
-import { MeetObjectDocument } from 'src/meet/schemas/meetobject.schema';
+import { PositionDocument, Position } from './schemas/position.schema';
+import { MeetObjectDocument , MeetObject} from 'src/meet/schemas/meetobject.schema';
 import { UserService } from 'src/user/user.service';
 import { RoomMessagesherper } from './helpers/roommessages.helper';
 import { UpdateUserPositonDto } from './dtos/updateposition.dto';
@@ -15,8 +15,8 @@ export class RoomService {
 
     constructor(
          @InjectModel(Meet.name) private readonly meetModel:Model<MeetDocument>,
-         @InjectModel(Meet.name) private readonly objectModel:Model<MeetObjectDocument>,
-         @InjectModel(Meet.name) private readonly positionModel:Model<PositionDocument>,
+         @InjectModel(MeetObject.name) private readonly objectModel:Model<MeetObjectDocument>,
+         @InjectModel(Position.name) private readonly positionModel:Model<PositionDocument>,
          private readonly userService: UserService
     ){}
 
@@ -28,7 +28,7 @@ export class RoomService {
 return {
     link,
     name: meet.name,
-    color:meet.color,
+    color: meet.color,
     objects
 };
     }
@@ -40,11 +40,11 @@ return {
     }
     
     async deleteUsersPosition(clientId:string){
-        this.logger.debug(`deleteUsersPositionByLink - ${clientId}`);
+        this.logger.debug(`deleteUsersPosition - ${clientId}`);
         return await this.positionModel.deleteMany({clientId});
     }
 
-    async UpdateUserPositon(clienteId: string, dto: UpdateUserPositonDto){
+    async UpdateUserPositon(clientId: string, dto: UpdateUserPositonDto){
         this.logger.debug(`listUsersPositionByLink - ${dto.link}`);
 
            const meet = await this._getMeet(dto.link);
@@ -56,7 +56,7 @@ return {
 
            const position = {
               ...dto,
-              clienteId,
+              clientId,
               user,
               meet,
               name:user.name,
@@ -65,7 +65,7 @@ return {
 
            const usersInRoom = await this.positionModel.find({meet});
            const loogedUserInRoom = usersInRoom.find(u =>
-               u.user.toString() === user._id.toString() || u.clientId === clienteId);
+               u.user.toString() === user._id.toString() || u.clientId === clientId);
 
                if(loogedUserInRoom){
                 await this.positionModel.findByIdAndUpdate({_id:loogedUserInRoom._id},position);
@@ -82,9 +82,7 @@ return {
                 const meet = await this._getMeet(dto.link);
                 const user = await this.userService.getUserById(dto.userId);
                 await this.positionModel.updateMany({user, meet}, {muted: dto.muted});
-             }
-
-   
+             }   
     
 
     async _getMeet(link: string){

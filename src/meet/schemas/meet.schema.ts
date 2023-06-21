@@ -17,7 +17,6 @@ name: string;
 @Prop({ required: true }) 
 color: string; 
 
-
 @Prop({ required: true }) 
 link: string; 
 } 

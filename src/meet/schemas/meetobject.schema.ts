@@ -8,15 +8,15 @@ export type MeetObjectDocument = HydratedDocument<MeetObject>;
 
 @Schema()
 export class MeetObject{
-  @Prop({type:mongoose.Schema.Types.ObjectId, ref:'Meet.name'})
+  @Prop({type:mongoose.Schema.Types.ObjectId, ref:Meet.name})
     meet: Meet; 
-
 
     @Prop({required:true})
     name:string;
 
     @Prop({required:true})
     x: number;
+
     @Prop({required:true})
     y: number;
 

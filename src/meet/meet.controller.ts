@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Put, HttpCode, HttpStatus, Param, Post, Request } from '@nestjs/common'; 
+import { Body, Controller, Delete, Get, Put, Param, Post, Request } from '@nestjs/common'; 
 import { CreateMeetDto } from './dtos/createmeet.dto'; 
 import { GetMeetDto } from './dtos/getmeet.dto'; 
 import { MeetService } from './meet.service'; 
@@ -20,7 +20,15 @@ export class MeetController {
 					name: m.name, 
 					color: m.color, 
 					link: m.link, 
-					}) as GetMeetDto);                 } 
+					}) as GetMeetDto);     
+				}		
+@Get(':id')
+
+   async getMeetById(@Request() req,@Param() params){
+		   const { userId } = req?.user; 
+			 const {id} = params;
+			 return await this.service.getMeetById(userId,id);		  
+	 }
 
 @Post() 
         async createMeet(@Request() req, @Body() dto: CreateMeetDto) { 
