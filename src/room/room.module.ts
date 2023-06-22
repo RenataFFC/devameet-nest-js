@@ -4,14 +4,14 @@ import { RoomController } from './room.controller';
 import { MeetModule } from 'src/meet/meet.module';
 import { UserModule } from 'src/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Position, PositionSchmea } from './schemas/position.schema';
+import { Position, PositionSchema } from './schemas/position.schema';
 import { RoomGateway } from './room.gateway';
 
 @Module({
   imports:[
     MeetModule, UserModule,
     MongooseModule.forFeature([
-      {name: Position.name, schema: PositionSchmea}
+      {name: Position.name, schema: PositionSchema}
     ])
   ],
   providers: [RoomService, RoomGateway],

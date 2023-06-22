@@ -18,7 +18,7 @@ export class RoomService {
          @InjectModel(MeetObject.name) private readonly objectModel:Model<MeetObjectDocument>,
          @InjectModel(Position.name) private readonly positionModel:Model<PositionDocument>,
          private readonly userService: UserService
-    ){}
+    ){ }
 
     async getRoom(link: string){
     this.logger.debug(`getRoom - ${link}`);

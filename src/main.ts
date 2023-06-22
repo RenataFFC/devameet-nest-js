@@ -14,13 +14,13 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
-      forbidNonWhitelisted: false,
-    }),
+      forbidNonWhitelisted: false
+    })
   );
 
   app.setGlobalPrefix('api');
 
-  await app.listen(process.env.SERVER_PORT);
+  await app.listen(3333);
 }
 
 bootstrap();

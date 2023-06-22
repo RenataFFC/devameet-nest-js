@@ -1,6 +1,5 @@
 import {Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { HydratedDocument, mongo } from "mongoose";
-import { type } from "os";
+import mongoose, { HydratedDocument } from "mongoose";
 import { Meet }from "src/meet/schemas/meet.schema";
 import { User } from "src/user/schemas/user.schemas";
 
@@ -37,4 +36,4 @@ export class Position {
     muted: boolean
 }
 
-export const PositionSchmea = SchemaFactory.createForClass(Position);
+export const PositionSchema = SchemaFactory.createForClass(Position);

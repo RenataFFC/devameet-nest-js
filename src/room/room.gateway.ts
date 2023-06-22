@@ -19,7 +19,7 @@ export class RoomGateway implements OnGatewayInit, OnGatewayDisconnect {
    @WebSocketServer() wss: Server;
     
   private logger = new Logger(RoomGateway.name);
-  private activeSockets :ActiveSocketType [] = [];
+  private activeSockets: ActiveSocketType [] = [];
 
     async handleDisconnect(client: any){ 
       const existingOnSocket = this.activeSockets.find(
@@ -46,19 +46,19 @@ export class RoomGateway implements OnGatewayInit, OnGatewayDisconnect {
      const {link, userId} = payload;
      const existingOnSocket = this.activeSockets.find(
       socket => socket.room === link && socket.id === client.id);
-      if (!existingOnSocket){
-        this.activeSockets.push({room:link, id: client.id, userId});
-        const dto = {
-          link,
-          userId,
-          x:1,
-          y:1,
-          orientation: 'front'
-        } as UpdateUserPositonDto
-        await this.service.UpdateUserPositon(client.id, dto);
+        if (!existingOnSocket){
+          this.activeSockets.push({ room:link, id: client.id, userId});
+          const dto = {
+            link,
+            userId,
+            x:1,
+            y:1,
+            orientation: 'front'
+          } as UpdateUserPositonDto
+          await this.service.UpdateUserPositon(client.id, dto);
       }
         const users = await this.service.listUsersPositionByLink(link);
-        this.wss.emit(`${link}-update-user-link`, {users});
+        this.wss.emit(`${link}-update-user-list`, {users});
 
         if (!existingOnSocket) {
           client.broadcast.emit(`${link}-add-user`, { user: client.id });
@@ -75,21 +75,40 @@ export class RoomGateway implements OnGatewayInit, OnGatewayDisconnect {
   const dto = {
     link,
     userId,
-    x,
+      x,
     y,
     orientation
   } as UpdateUserPositonDto
-  await this.service.UpdateUserPositon(client.id, dto);
-  const users = await this.service.listUsersPositionByLink(link);
-  this.wss.emit(`${link}-update-user-link`, {users});
-}
+      await this.service.UpdateUserPositon(client.id, dto);
+      const users = await this.service.listUsersPositionByLink(link);
+      this.wss.emit(`${link}-update-user-list`, {users});
+    }
 
 @SubscribeMessage('toggl-mute-user')
 async handleToglMute (_:Socket,payload: ToglMuteDto){
 const {link} = payload;
 await this.service.updateUserMute(payload);
 const users = await this.service.listUsersPositionByLink(link);
-this.wss.emit(`${link}-update-user-link`, {users});
+this.wss.emit(`${link}-update-user-list`, {users});
+}
+
+@SubscribeMessage('call-user')
+async callUser (client:  Socket, data: any){
+  this.logger.debug (`callUser: ${client.id} to:${data.to}`);
+  client.to(data.to).emit('call-made',
+   { offer: data.offer, 
+     socket: client.id
+  });
+}
+
+
+@SubscribeMessage('make-answer')
+async makeAnswer (client: Socket, data: any){
+this.logger.debug(`makeAnswer: ${client.id} to:${data.to}`);
+client.to(data.to).emit('answer-made', {
+   answer: data.answer,
+   Socket: client.id
+});
 }
 }
 
