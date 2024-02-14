@@ -9,6 +9,7 @@ import { RoomMessagesherper } from './helpers/roommessages.helper';
 import { UpdateUserPositonDto } from './dtos/updateposition.dto';
 import { ToglMuteDto } from './dtos/toglMute.dto';
 
+
 @Injectable()
 export class RoomService {
     private logger = new Logger(RoomService.name);
@@ -44,7 +45,8 @@ return {
         return await this.positionModel.deleteMany({clientId});
     }
 
-    async UpdateUserPositon(clientId: string, dto: UpdateUserPositonDto){
+   
+ async UpdateUserPositon(clientId: string, dto: UpdateUserPositonDto){
         this.logger.debug(`listUsersPositionByLink - ${dto.link}`);
 
            const meet = await this._getMeet(dto.link);
@@ -75,7 +77,7 @@ return {
                 };
                 await this.positionModel.create(position);
                }    
-             }
+            }
              async updateUserMute (dto:ToglMuteDto){
                 this.logger.debug(`updateUserMute - ${dto.link}-  ${dto.userId}`);
 
