@@ -21,7 +21,7 @@ export class MeetObject{
     y: number;
 
     @Prop({required:true})
-    zIndex:number;
+    zindex:number;
 
     @Prop()
     orientation: string;
